@@ -1,0 +1,3111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NO ADDED SUGAR">
+<meta name="theme-color" content="#080808">
+<title>NO ADDED SUGAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080808;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --card: #141414;
+  --border: #252525;
+  --border2: #2e2e2e;
+  --red: #E8192C;
+  --yellow: #FFD700;
+  --blue: #4a9eff;
+  --green: #5dba74;
+  --orange: #ff8c42;
+  --violet: #cc44ff;
+  --text: #f0f0f0;
+  --text2: #888;
+  --text3: #555;
+  --font-title: 'Bebas Neue', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --font-label: 'Barlow Condensed', sans-serif;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── LAYOUT ── */
+.app {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8,8,8,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+
+.nav-btn {
+  flex: 1;
+  min-width: 60px;
+  padding: 12px 8px 10px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text3);
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.nav-btn .nav-icon { font-size: 16px; line-height: 1; }
+.nav-btn.active { color: var(--red); border-bottom-color: var(--red); }
+.nav-btn:hover:not(.active) { color: var(--text2); }
+
+/* ── TABS ── */
+.tab { display: none; flex: 1; padding: 16px 16px 100px; }
+.tab.active { display: block; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+
+/* ── HOME — CLOCK ── */
+.clock-card {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a0a0a 100%);
+  border: 1px solid #2a1515;
+  border-radius: 10px;
+  padding: 20px 16px 16px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.clock-time {
+  font-family: var(--font-title);
+  font-size: 72px;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: 2px;
+}
+.clock-time span { color: var(--red); animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.clock-date {
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-top: 4px;
+}
+
+/* ── STREAK HERO ── */
+.streak-hero {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 16px;
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.streak-main { grid-column: 1 / -1; text-align: center; }
+.streak-number {
+  font-family: var(--font-title);
+  font-size: 80px;
+  line-height: 1;
+  color: var(--red);
+}
+.streak-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-top: 2px;
+}
+.streak-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+}
+.streak-sub-val {
+  font-family: var(--font-title);
+  font-size: 28px;
+  color: var(--yellow);
+}
+.streak-sub-lbl {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: center;
+}
+
+/* ── JOKERS ── */
+.jokers-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+.joker-dot {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  transition: background 0.3s;
+}
+.joker-dot.used { background: var(--orange); }
+.joker-dot.dead { background: var(--red); border-color: var(--red); }
+.jokers-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-left: 8px;
+}
+
+/* ── STATS ROW ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.stat-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.stat-val {
+  font-family: var(--font-title);
+  font-size: 26px;
+  line-height: 1;
+}
+.stat-lbl {
+  font-family: var(--font-label);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ── MILESTONE PROGRESS ── */
+.milestone-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.milestone-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.milestone-name {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--yellow);
+}
+.milestone-days {
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--text2);
+}
+.progress-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--red), var(--yellow));
+  transition: width 0.6s ease;
+}
+
+/* ── LOG DU JOUR ── */
+.log-section { margin-bottom: 12px; }
+.log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-red { background: var(--red); color: white; }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+}
+.btn-outline:hover { border-color: var(--text3); color: var(--text); }
+.btn-green { background: var(--green); color: white; }
+.btn-blue { background: var(--blue); color: white; }
+.btn-sm { padding: 7px 12px; font-size: 11px; }
+.btn-full { width: 100%; margin-bottom: 8px; }
+
+.log-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* ── TODAY LOGS ── */
+.today-entries { margin-top: 10px; }
+.entry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.entry-left { display: flex; align-items: center; gap: 10px; }
+.entry-level {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.entry-name {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+}
+.entry-meta {
+  font-family: var(--font-label);
+  font-size: 11px;
+  color: var(--text3);
+}
+.entry-delete {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  transition: color 0.2s;
+}
+.entry-delete:hover { color: var(--red); }
+
+/* ── WATER / WEIGHT INPUTS ── */
+.inline-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.inline-input-row label {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+  flex-shrink: 0;
+  min-width: 80px;
+}
+.inline-input-row input {
+  flex: 1;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+}
+.inline-input-row input::-webkit-inner-spin-button,
+.inline-input-row input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.inline-input-row input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.inline-input-row .unit {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  width: 100%;
+  max-width: 600px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-radius: 16px 16px 0 0;
+  padding: 20px 16px 40px;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-title {
+  font-family: var(--font-title);
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--border);
+  border: none;
+  color: var(--text2);
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── DRINK PICKER ── */
+.drink-level-section { margin-bottom: 16px; }
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.level-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.level-name {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.drink-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+.drink-btn {
+  padding: 10px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.drink-btn:hover { border-color: var(--border2); background: #222; }
+.drink-btn.selected { border-color: var(--blue); background: rgba(74,158,255,0.1); }
+
+.qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+.qty-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  color: var(--text);
+  font-size: 22px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.qty-btn:hover { background: var(--border2); }
+.qty-val {
+  font-family: var(--font-title);
+  font-size: 40px;
+  min-width: 50px;
+  text-align: center;
+}
+.qty-unit {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.custom-drink-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.custom-drink-row input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.custom-drink-row input:focus { outline: none; border-color: var(--blue); }
+
+select {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+select:focus { outline: none; border-color: var(--blue); }
+
+/* ── STATS TAB ── */
+.stats-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.drink-stat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.drink-stat-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.drink-stat-count {
+  font-family: var(--font-title);
+  font-size: 20px;
+}
+
+/* ── CALENDAR ── */
+.cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cal-month {
+  font-family: var(--font-title);
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day-header {
+  text-align: center;
+  font-family: var(--font-label);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  padding: 4px 0;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s;
+}
+.cal-day.empty { background: transparent; cursor: default; }
+.cal-day.future { color: var(--text3); background: transparent; cursor: default; }
+.cal-day.clean { background: rgba(93,186,116,0.25); color: var(--green); border: 1px solid rgba(93,186,116,0.3); }
+.cal-day.joker { background: rgba(255,140,66,0.2); color: var(--orange); border: 1px solid rgba(255,140,66,0.3); }
+.cal-day.broken { background: rgba(232,25,44,0.2); color: var(--red); border: 1px solid rgba(232,25,44,0.3); }
+.cal-day.today { box-shadow: 0 0 0 2px var(--blue); }
+.cal-day.no-data { color: var(--text3); background: var(--bg3); }
+
+.cal-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--bg3);
+  border-radius: 8px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ── STREAKS LIST ── */
+.streak-item {
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.streak-item-left { display: flex; flex-direction: column; gap: 4px; }
+.streak-item-days {
+  font-family: var(--font-title);
+  font-size: 28px;
+  color: var(--yellow);
+  line-height: 1;
+}
+.streak-item-dates {
+  font-family: var(--font-label);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.05em;
+}
+.streak-item-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+.badge {
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.badge-gold { background: rgba(255,215,0,0.15); color: var(--yellow); border: 1px solid rgba(255,215,0,0.3); }
+.badge-silver { background: rgba(192,192,192,0.15); color: #ccc; border: 1px solid rgba(192,192,192,0.3); }
+.badge-red { background: rgba(232,25,44,0.15); color: var(--red); border: 1px solid rgba(232,25,44,0.3); }
+
+/* ── RULES TAB ── */
+.rules-section { margin-bottom: 20px; }
+.rules-title {
+  font-family: var(--font-title);
+  font-size: 22px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.rule-item {
+  padding: 10px 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text2);
+}
+.rule-item strong { color: var(--text); }
+
+.drink-classif-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.classif-level {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.classif-info { flex: 1; }
+.classif-name {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+}
+.classif-rule {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.milestone-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+.milestone-icon { font-size: 24px; flex-shrink: 0; }
+.milestone-info { flex: 1; }
+.milestone-days-label {
+  font-family: var(--font-title);
+  font-size: 20px;
+  color: var(--yellow);
+  line-height: 1;
+}
+.milestone-desc {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.milestone-achieved {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+
+/* ── DATA TAB ── */
+.drive-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.drive-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.drive-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.drive-dot.syncing { background: var(--blue); animation: pulse 1s ease-in-out infinite; }
+.drive-dot.error { background: var(--red); }
+.drive-dot.disconnected { background: var(--text3); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.drive-status-text {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
+  flex: 1;
+}
+
+/* ── TOAST ── */
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: calc(100% - 32px);
+  max-width: 560px;
+  pointer-events: none;
+}
+.toast {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+  pointer-events: auto;
+}
+.toast.success { background: var(--green); color: white; }
+.toast.error { background: var(--red); color: white; }
+.toast.info { background: var(--blue); color: white; }
+.toast.warning { background: var(--orange); color: white; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* ── IOS INSTALL BANNER ── */
+.ios-banner {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 16px;
+  right: 16px;
+  background: #1c1c1e;
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 14px 16px;
+  z-index: 400;
+  animation: slideUp 0.4s ease;
+}
+.ios-banner.show { display: flex; align-items: center; gap: 12px; }
+.ios-banner-icon { font-size: 32px; flex-shrink: 0; }
+.ios-banner-text {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.4;
+}
+.ios-banner-text strong { color: var(--text); }
+.ios-banner-close {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+/* ── WEIGHT HISTORY ── */
+.weight-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+.weight-date { font-family: var(--font-label); font-size: 11px; color: var(--text3); letter-spacing: 0.05em; }
+.weight-val { font-family: var(--font-title); font-size: 22px; color: var(--blue); }
+.weight-unit { font-family: var(--font-label); font-size: 11px; color: var(--text3); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text3);
+}
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state p { font-family: var(--font-body); font-size: 14px; line-height: 1.5; }
+
+/* ── DAY DETAIL PANEL ── */
+.day-detail-drink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg2);
+  border-radius: 6px;
+  margin-bottom: 5px;
+  font-family: var(--font-body);
+  font-size: 13px;
+}
+.day-detail-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: var(--bg2);
+  border-radius: 6px;
+  margin-bottom: 5px;
+}
+.day-detail-stat-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.day-detail-stat-val {
+  font-family: var(--font-title);
+  font-size: 18px;
+}
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.status-badge.clean   { background: rgba(93,186,116,0.15); color: var(--green); border: 1px solid rgba(93,186,116,0.3); }
+.status-badge.joker   { background: rgba(255,140,66,0.15); color: var(--orange); border: 1px solid rgba(255,140,66,0.3); }
+.status-badge.broken  { background: rgba(232,25,44,0.15); color: var(--red); border: 1px solid rgba(232,25,44,0.3); }
+.status-badge.no-data { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
+
+/* ── WEIGHT CHART ── */
+#weight-chart { display: block; }
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+/* ── MISC ── */
+.text-red { color: var(--red); }
+.text-yellow { color: var(--yellow); }
+.text-green { color: var(--green); }
+.text-blue { color: var(--blue); }
+.text-orange { color: var(--orange); }
+
+.confirmation-text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- NAV -->
+  <nav>
+    <button class="nav-btn active" onclick="showTab('home')" id="nav-home">
+      <span class="nav-icon">🏠</span>HOME
+    </button>
+    <button class="nav-btn" onclick="showTab('stats')" id="nav-stats">
+      <span class="nav-icon">📊</span>STATS
+    </button>
+    <button class="nav-btn" onclick="showTab('history')" id="nav-history">
+      <span class="nav-icon">📅</span>HISTORIQUE
+    </button>
+    <button class="nav-btn" onclick="showTab('weight')" id="nav-weight">
+      <span class="nav-icon">⚖️</span>POIDS
+    </button>
+    <button class="nav-btn" onclick="showTab('rules')" id="nav-rules">
+      <span class="nav-icon">📋</span>RÈGLES
+    </button>
+    <button class="nav-btn" onclick="showTab('data')" id="nav-data">
+      <span class="nav-icon">☁️</span>DONNÉES
+    </button>
+  </nav>
+
+  <!-- ════════════════════════════════════
+       TAB HOME
+  ════════════════════════════════════ -->
+  <div class="tab active" id="tab-home">
+
+    <!-- Clock -->
+    <div class="clock-card">
+      <div class="clock-time" id="clock-display">00<span>:</span>00</div>
+      <div class="clock-date" id="clock-date">—</div>
+    </div>
+
+    <!-- Streak Hero -->
+    <div class="streak-hero">
+      <div class="streak-main">
+        <div class="streak-number" id="streak-current">0</div>
+        <div class="streak-label">JOURS SANS SODA</div>
+        <div class="jokers-row" id="jokers-display">
+          <div class="joker-dot" id="j1"></div>
+          <div class="joker-dot" id="j2"></div>
+          <div class="joker-dot" id="j3"></div>
+          <span class="jokers-label" id="jokers-label">JOKERS</span>
+        </div>
+      </div>
+      <div class="streak-sub">
+        <div class="streak-sub-val" id="streak-record">0</div>
+        <div class="streak-sub-lbl">RECORD</div>
+      </div>
+      <div class="streak-sub">
+        <div class="streak-sub-val" id="streak-next-milestone">7</div>
+        <div class="streak-sub-lbl">PROCHAIN PALIER</div>
+      </div>
+    </div>
+
+    <!-- Milestone Progress -->
+    <div class="milestone-bar">
+      <div class="milestone-top">
+        <span class="milestone-name" id="milestone-name">OBJECTIF 7 JOURS</span>
+        <span class="milestone-days" id="milestone-days-left">7 jours restants</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="milestone-progress" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Stats rapides -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-val text-blue" id="stat-water-total">0L</div>
+        <div class="stat-lbl">EAU TOTALE</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val text-blue" id="stat-water-avg">0L</div>
+        <div class="stat-lbl">MOY / JOUR</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val text-red" id="stat-sodas-total">0</div>
+        <div class="stat-lbl">SODAS BUS</div>
+      </div>
+    </div>
+
+    <!-- Log du jour -->
+    <div class="card">
+      <div class="card-title">LOG DU JOUR</div>
+
+      <!-- Eau -->
+      <div class="inline-input-row">
+        <label>💧 EAU</label>
+        <input type="number" id="today-water" placeholder="0.0" min="0" max="10" step="0.1" onchange="saveTodayWater()">
+        <span class="unit">LITRES</span>
+      </div>
+
+      <!-- Poids -->
+      <div class="inline-input-row">
+        <label>⚖️ POIDS</label>
+        <input type="number" id="today-weight" placeholder="0.0" min="30" max="200" step="0.1" onchange="saveTodayWeight()">
+        <span class="unit">KG</span>
+      </div>
+
+      <!-- Ajouter boisson -->
+      <button class="btn btn-red btn-full" onclick="openDrinkModal('today')">+ AJOUTER UNE BOISSON</button>
+
+      <!-- Entries today -->
+      <div class="today-entries" id="today-entries"></div>
+    </div>
+
+    <!-- Log J-1 (affiché uniquement si hier non rempli) -->
+    <div class="card" id="yesterday-card" style="display:none;border-color:#2a1f0a;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div class="card-title" style="margin-bottom:0;color:var(--orange)">⚠️ LOG D'HIER</div>
+        <span id="yesterday-deadline" style="font-family:var(--font-label);font-size:10px;color:var(--orange);letter-spacing:0.05em;"></span>
+      </div>
+      <p style="font-family:var(--font-body);font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5;">
+        Tu n'as pas rempli les logs d'hier. <strong style="color:var(--orange)">Tu as jusqu'à minuit ce soir.</strong> Après, la streak sera rompue.
+      </p>
+
+      <!-- Eau hier -->
+      <div class="inline-input-row">
+        <label>💧 EAU</label>
+        <input type="number" id="yesterday-water" placeholder="0.0" min="0" max="10" step="0.1">
+        <span class="unit">LITRES</span>
+      </div>
+
+      <!-- Poids hier -->
+      <div class="inline-input-row">
+        <label>⚖️ POIDS</label>
+        <input type="number" id="yesterday-weight" placeholder="0.0" min="30" max="200" step="0.1">
+        <span class="unit">KG</span>
+      </div>
+
+      <button class="btn btn-full" style="background:rgba(255,140,66,0.15);border:1px solid var(--orange);color:var(--orange);font-family:var(--font-label);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;padding:10px 16px;border-radius:8px;margin-bottom:8px;" onclick="openDrinkModal('yesterday')">+ AJOUTER UNE BOISSON (HIER)</button>
+
+      <div class="today-entries" id="yesterday-entries"></div>
+
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid #2a1f0a;">
+        <button class="btn btn-full" style="background:var(--orange);color:white;font-family:var(--font-label);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;padding:12px 16px;border-radius:8px;border:none;" onclick="validateYesterday()">✓ VALIDER LA SAISIE D'HIER</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════
+       TAB STATS
+  ════════════════════════════════════ -->
+  <div class="tab" id="tab-stats">
+
+    <!-- Global numbers -->
+    <div class="card">
+      <div class="card-title">CHIFFRES GLOBAUX</div>
+      <div class="stats-detail-grid">
+        <div class="stat-box">
+          <div class="stat-val text-red" id="s-sodas">0</div>
+          <div class="stat-lbl">VERRES NIVEAU 4</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val text-yellow" id="s-level2">0</div>
+          <div class="stat-lbl">VERRES NIVEAU 2</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val text-green" id="s-level1">0</div>
+          <div class="stat-lbl">VERRES NIVEAU 1</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val text-blue" id="s-water">0L</div>
+          <div class="stat-lbl">EAU TOTALE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Détail par boisson -->
+    <div class="card">
+      <div class="card-title">DÉTAIL PAR BOISSON</div>
+      <div id="drinks-breakdown"></div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════
+       TAB HISTORY
+  ════════════════════════════════════ -->
+  <div class="tab" id="tab-history">
+
+    <!-- Calendrier -->
+    <div class="card">
+      <div class="cal-nav">
+        <button class="btn btn-outline btn-sm" onclick="calPrev()">◀</button>
+        <span class="cal-month" id="cal-title">—</span>
+        <button class="btn btn-outline btn-sm" onclick="calNext()">▶</button>
+      </div>
+      <!-- Month / Year pickers + Today button -->
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <select id="cal-month-select" onchange="calJumpToSelected()" style="flex:1;font-size:13px;padding:7px 10px;">
+          <option value="0">Janvier</option><option value="1">Février</option>
+          <option value="2">Mars</option><option value="3">Avril</option>
+          <option value="4">Mai</option><option value="5">Juin</option>
+          <option value="6">Juillet</option><option value="7">Août</option>
+          <option value="8">Septembre</option><option value="9">Octobre</option>
+          <option value="10">Novembre</option><option value="11">Décembre</option>
+        </select>
+        <select id="cal-year-select" onchange="calJumpToSelected()" style="width:90px;font-size:13px;padding:7px 10px;"></select>
+        <button class="btn btn-red btn-sm" onclick="calGoToday()" style="white-space:nowrap;flex-shrink:0;">AUJOURD'HUI</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Clean</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Joker utilisé</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Rupture</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--bg3)"></div>Aucune donnée</div>
+      </div>
+
+      <!-- Day detail panel — shown on day click -->
+      <div id="cal-day-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="card-title" style="margin-bottom:0;" id="cal-detail-title">—</div>
+          <div id="cal-detail-status-badge"></div>
+        </div>
+        <div id="cal-detail-body"></div>
+      </div>
+    </div>
+
+    <!-- Streaks history -->
+    <div class="card">
+      <div class="card-title">HISTORIQUE DES STREAKS</div>
+      <div id="streaks-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════
+       TAB WEIGHT
+  ════════════════════════════════════ -->
+  <div class="tab" id="tab-weight">
+
+    <!-- Objectif + stats clés -->
+    <div class="card">
+      <div class="card-title">OBJECTIF POIDS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+        <div class="stat-box">
+          <div class="stat-val text-blue" id="w-current">—</div>
+          <div class="stat-lbl">ACTUEL (kg)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val text-green" id="w-target-display">—</div>
+          <div class="stat-lbl">OBJECTIF (kg)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val text-yellow" id="w-start">—</div>
+          <div class="stat-lbl">DÉPART (kg)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="w-delta" style="color:var(--text)">—</div>
+          <div class="stat-lbl">VARIATION</div>
+        </div>
+      </div>
+      <!-- Target input -->
+      <div class="inline-input-row">
+        <label>🎯 OBJECTIF</label>
+        <input type="number" id="w-target-input" placeholder="Ex: 75.0" min="30" max="200" step="0.1" onchange="saveWeightTarget()">
+        <span class="unit">KG</span>
+      </div>
+      <!-- Progress toward target -->
+      <div id="w-progress-section" style="margin-top:12px;display:none;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-family:var(--font-label);font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);">PROGRESSION VERS L'OBJECTIF</span>
+          <span style="font-family:var(--font-label);font-size:11px;color:var(--green);" id="w-progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="w-progress-bar" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--green));"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card">
+      <div class="card-title">COURBE D'ÉVOLUTION</div>
+      <div id="weight-chart-container" style="position:relative;height:180px;">
+        <canvas id="weight-chart" style="width:100%;height:100%;"></canvas>
+        <div id="weight-chart-empty" class="empty-state" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div class="empty-icon">⚖️</div>
+          <p>Saisis ton poids quotidiennement<br>pour voir la courbe apparaître.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-title">STATISTIQUES</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0;" id="w-stats-grid">
+        <div class="stat-box"><div class="stat-val text-green" id="w-min">—</div><div class="stat-lbl">MINIMUM (kg)</div></div>
+        <div class="stat-box"><div class="stat-val text-red" id="w-max">—</div><div class="stat-lbl">MAXIMUM (kg)</div></div>
+        <div class="stat-box"><div class="stat-val text-blue" id="w-avg">—</div><div class="stat-lbl">MOYENNE (kg)</div></div>
+        <div class="stat-box"><div class="stat-val" id="w-entries" style="color:var(--text)">—</div><div class="stat-lbl">SAISIES</div></div>
+      </div>
+    </div>
+
+    <!-- History list -->
+    <div class="card">
+      <div class="card-title">HISTORIQUE</div>
+      <div id="weight-history-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════
+       TAB RULES
+  ════════════════════════════════════ -->
+  <div class="tab" id="tab-rules">
+
+    <div class="rules-section">
+      <div class="rules-title">⚔️ RÈGLES DU JEU</div>
+      <div class="rule-item"><strong>Streak active</strong> — Chaque jour sans boisson niveau 4 incrémente ta streak.</div>
+      <div class="rule-item"><strong>Rupture immédiate</strong> — Toute boisson niveau 4 remet la streak à zéro, quel que soit ton score.</div>
+      <div class="rule-item"><strong>Jokers niveau 2</strong> — Tu disposes de <strong>3 jokers par streak</strong>. Une journée avec du niveau 2 consomme 1 joker (peu importe la quantité ce jour-là). Le 3ème joker est l'erreur fatale qui rompt la streak.</div>
+      <div class="rule-item"><strong>Record historique</strong> — Sauvegardé automatiquement à chaque rupture. Visible en permanence sur l'écran d'accueil.</div>
+      <div class="rule-item"><strong>Résumé :</strong> Joker 1 → streak continue · Joker 2 → streak continue · Joker 3 → streak rompue.</div>
+    </div>
+
+    <div class="rules-section">
+      <div class="rules-title">🎯 MILESTONES</div>
+      <div id="milestones-rules-list"></div>
+    </div>
+
+    <div class="rules-section">
+      <div class="rules-title">🔴 NIVEAU 4 — INTERDIT</div>
+      <div id="classif-level4"></div>
+    </div>
+
+    <div class="rules-section">
+      <div class="rules-title">🟡 NIVEAU 2 — JOKER</div>
+      <p style="font-family:var(--font-body);font-size:13px;color:var(--text3);margin-bottom:10px;">Tolérés dans la limite de 2 jours par streak (le 3ème jour casse la streak).</p>
+      <div id="classif-level2"></div>
+    </div>
+
+    <div class="rules-section">
+      <div class="rules-title">🟢 NIVEAU 1 — OK</div>
+      <p style="font-family:var(--font-body);font-size:13px;color:var(--text3);margin-bottom:10px;">Aucune restriction.</p>
+      <div id="classif-level1"></div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════
+       TAB DONNÉES
+  ════════════════════════════════════ -->
+  <div class="tab" id="tab-data">
+
+    <!-- Drive status -->
+    <div class="card">
+      <div class="card-title">GOOGLE DRIVE</div>
+      <div class="drive-status">
+        <div class="drive-dot disconnected" id="drive-dot"></div>
+        <span class="drive-status-text" id="drive-status-text">Déconnecté</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <button class="btn btn-blue" id="drive-connect-btn" onclick="driveConnect()">SE CONNECTER</button>
+        <button class="btn btn-outline" id="drive-disconnect-btn" onclick="driveDisconnect()" style="display:none">DÉCONNECTER</button>
+        <button class="btn btn-outline" onclick="driveSaveNow()">SAUVER MAINTENANT</button>
+        <button class="btn btn-outline" onclick="driveLoad()">RECHARGER</button>
+      </div>
+      <div id="drive-last-sync" style="font-family:var(--font-label);font-size:10px;color:var(--text3);letter-spacing:0.05em;text-align:center;"></div>
+    </div>
+
+    <!-- Export / Import -->
+    <div class="card">
+      <div class="card-title">BACKUP MANUEL</div>
+      <button class="btn btn-outline btn-full" onclick="exportJSON()">📥 EXPORTER JSON</button>
+      <button class="btn btn-outline btn-full" onclick="document.getElementById('import-file').click()">📤 IMPORTER JSON</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+
+    <!-- Reset -->
+    <div class="card">
+      <div class="card-title">DANGER ZONE</div>
+      <button class="btn btn-full" style="background:rgba(232,25,44,0.15);border:1px solid var(--red);color:var(--red);font-family:var(--font-label);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;padding:10px 16px;border-radius:8px;" onclick="openResetModal()">⚠️ RÉINITIALISER TOUTES LES DONNÉES</button>
+    </div>
+
+  </div>
+
+</div><!-- end .app -->
+
+<!-- ════════════════════════════════════
+     MODAL — AJOUTER UNE BOISSON
+════════════════════════════════════ -->
+<div class="modal-overlay" id="drink-modal" onclick="closeDrinkModalOutside(event)">
+  <div class="modal" style="position:relative;max-height:85vh;overflow-y:auto;">
+    <button class="modal-close" onclick="closeDrinkModal()">✕</button>
+    <div class="modal-title">AJOUTER UNE BOISSON</div>
+
+    <!-- Niveau 4 -->
+    <div class="drink-level-section">
+      <div class="level-header">
+        <div class="level-dot" style="background:var(--red)"></div>
+        <span class="level-name" style="color:var(--red)">Niveau 4 — Interdit</span>
+      </div>
+      <div class="drink-grid" id="modal-drinks-4"></div>
+    </div>
+
+    <!-- Niveau 2 -->
+    <div class="drink-level-section">
+      <div class="level-header">
+        <div class="level-dot" style="background:var(--yellow)"></div>
+        <span class="level-name" style="color:var(--yellow)">Niveau 2 — Joker</span>
+      </div>
+      <div class="drink-grid" id="modal-drinks-2"></div>
+    </div>
+
+    <!-- Niveau 1 -->
+    <div class="drink-level-section">
+      <div class="level-header">
+        <div class="level-dot" style="background:var(--green)"></div>
+        <span class="level-name" style="color:var(--green)">Niveau 1 — OK</span>
+      </div>
+      <div class="drink-grid" id="modal-drinks-1"></div>
+    </div>
+
+    <!-- Custom -->
+    <div class="drink-level-section">
+      <div class="level-header">
+        <div class="level-dot" style="background:var(--violet)"></div>
+        <span class="level-name" style="color:var(--violet)">Nouvelle boisson</span>
+      </div>
+      <div class="custom-drink-row">
+        <input type="text" id="custom-drink-name" placeholder="Nom de la boisson...">
+        <select id="custom-drink-level">
+          <option value="4">Niveau 4</option>
+          <option value="2">Niveau 2</option>
+          <option value="1">Niveau 1</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="addCustomDrink()">+</button>
+      </div>
+    </div>
+
+    <!-- Quantité -->
+    <div class="divider"></div>
+    <div style="text-align:center;margin-bottom:8px;">
+      <span class="section-title">QUANTITÉ</span>
+    </div>
+    <div class="qty-row">
+      <button class="qty-btn" onclick="changeQty(-1)">−</button>
+      <div>
+        <div class="qty-val" id="modal-qty">1</div>
+        <div class="qty-unit">verre(s) × 33cl</div>
+      </div>
+      <button class="qty-btn" onclick="changeQty(1)">+</button>
+    </div>
+
+    <button class="btn btn-red btn-full" id="modal-add-btn" onclick="confirmAddDrink()" disabled>AJOUTER</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     MODAL — RESET CONFIRMATION
+════════════════════════════════════ -->
+<div class="modal-overlay" id="reset-modal" onclick="closeResetModalOutside(event)">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeResetModal()">✕</button>
+    <div class="modal-title text-red">⚠️ RÉINITIALISER</div>
+    <p class="confirmation-text">Cette action supprime <strong>toutes tes données</strong> : logs, streaks, poids, boissons personnalisées. Cette action est irréversible.</p>
+    <button class="btn btn-full" style="background:var(--red);color:white;font-family:var(--font-label);font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;padding:12px 16px;border-radius:8px;border:none;margin-bottom:8px;" onclick="confirmReset()">OUI, TOUT SUPPRIMER</button>
+    <button class="btn btn-outline btn-full" onclick="closeResetModal()">ANNULER</button>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- IOS BANNER -->
+<div class="ios-banner" id="ios-banner">
+  <div class="ios-banner-icon">🧃</div>
+  <div class="ios-banner-text">
+    <strong>Installe NO ADDED SUGAR</strong><br>
+    Appuie sur <strong>⎙</strong> puis "Sur l'écran d'accueil"
+  </div>
+  <button class="ios-banner-close" onclick="dismissIOSBanner()">✕</button>
+</div>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  CONFIGURATION
+// ════════════════════════════════════════════════════════════
+const CLIENT_ID = '365799344100-hnqhj2r0q8bpmbmg4a7tbb9022g45no3.apps.googleusercontent.com';
+const SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+const DRIVE_FILE = 'no-sugar-data.json';
+
+const MILESTONES = [
+  { days: 7,   icon: '🥉', label: 'BRONZE',    desc: 'Première semaine' },
+  { days: 30,  icon: '🥈', label: 'ARGENT',    desc: 'Un mois complet' },
+  { days: 50,  icon: '🥇', label: 'OR',         desc: 'Cinquante jours' },
+  { days: 100, icon: '💎', label: 'DIAMANT',    desc: 'Cent jours' },
+  { days: 180, icon: '🏆', label: 'LÉGENDAIRE', desc: 'Six mois' },
+  { days: 365, icon: '∞',  label: 'INFINI',     desc: 'Un an entier' },
+];
+
+const DEFAULT_DRINKS = [
+  // Niveau 4
+  { nom: 'Coca', niveau: 4 },
+  { nom: 'Coca Vanille', niveau: 4 },
+  { nom: 'Coca Cherry', niveau: 4 },
+  { nom: 'Pepsi', niveau: 4 },
+  { nom: 'Pepsi Cherry', niveau: 4 },
+  { nom: 'Fanta Orange', niveau: 4 },
+  { nom: 'Orangina', niveau: 4 },
+  { nom: 'Ice Tea', niveau: 4 },
+  { nom: 'Oasis Tropical', niveau: 4 },
+  // Niveau 2
+  { nom: 'Jus d\'orange pressé', niveau: 2 },
+  { nom: 'Jus d\'orange pur jus', niveau: 2 },
+  { nom: 'Jus de pomme pur jus', niveau: 2 },
+  { nom: 'Diabolo grenadine', niveau: 2 },
+  { nom: 'Diabolo pêche', niveau: 2 },
+  { nom: 'Thé glacé maison', niveau: 2 },
+  // Niveau 1
+  { nom: 'Eau plate', niveau: 1 },
+  { nom: 'Eau gazeuse', niveau: 1 },
+  { nom: 'Thé sans sucre', niveau: 1 },
+  { nom: 'Thé avec miel', niveau: 1 },
+];
+
+// ════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════
+let appData = {
+  logs: [],
+  streaks: [],
+  streak_actuelle: { debut: null, jokers_utilises: 0, jours_niveau2: [] },
+  boissons_custom: [],
+  settings: { prenom: 'Samy', weight_target: null },
+  yesterday_validated: null,
+  meta: { created: today(), last_sync: null }
+};
+
+let driveToken = null;
+let driveFileId = null;
+let driveStatus = 'disconnected'; // ok | syncing | error | disconnected
+let syncTimeout = null;
+let tokenClient = null;
+
+// Modal state
+let selectedDrink = null;
+let modalQty = 1;
+let modalTarget = 'today'; // 'today' | 'yesterday'
+
+// Calendar state — initialized immediately so populateYearSelect never sees NaN
+const _now = new Date();
+let calYear  = _now.getFullYear();
+let calMonth = _now.getMonth();
+
+// ════════════════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════════════════
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function formatDate(d) {
+  const [y, m, day] = d.split('-');
+  const months = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+  return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+}
+
+function daysBetween(d1, d2) {
+  return Math.round((new Date(d2) - new Date(d1)) / 86400000);
+}
+
+function addDays(d, n) {
+  const dt = new Date(d);
+  dt.setDate(dt.getDate() + n);
+  return dt.toISOString().slice(0, 10);
+}
+
+function getLevelColor(level) {
+  if (level === 4) return 'var(--red)';
+  if (level === 2) return 'var(--yellow)';
+  return 'var(--green)';
+}
+
+function getAllDrinks() {
+  return [...DEFAULT_DRINKS, ...appData.boissons_custom];
+}
+
+// ════════════════════════════════════════════════════════════
+//  CLOCK
+// ════════════════════════════════════════════════════════════
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('clock-display').innerHTML = `${h}<span>:</span>${m}`;
+
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('clock-date').textContent =
+    `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// ════════════════════════════════════════════════════════════
+//  STREAK LOGIC
+// ════════════════════════════════════════════════════════════
+function computeStreak() {
+  const t = today();
+  const sa = appData.streak_actuelle;
+
+  if (!sa.debut) {
+    sa.debut = t;
+    sa.jokers_utilises = 0;
+    sa.jours_niveau2 = [];
+  }
+
+  const start = sa.debut;
+  const days = daysBetween(start, t);
+  return { days, jokers: sa.jokers_utilises };
+}
+
+function getRecord() {
+  const historical = appData.streaks.map(s => s.duree);
+  const current = computeStreak().days;
+  return Math.max(0, ...historical, current);
+}
+
+function getNextMilestone(current) {
+  for (const m of MILESTONES) {
+    if (current < m.days) return m;
+  }
+  return { days: 365, icon: '∞', label: 'INFINI', desc: 'Un an entier' };
+}
+
+function getMilestonesAchievedInCurrentStreak() {
+  const days = computeStreak().days;
+  return MILESTONES.filter(m => m.days <= days);
+}
+
+// Called when a drink is logged — updates streak state
+function processNewDrink(drink) {
+  const t = today();
+  const sa = appData.streak_actuelle;
+
+  if (drink.niveau === 4) {
+    // Break streak immediately
+    breakStreak(t);
+    return 'broken';
+  }
+
+  if (drink.niveau === 2) {
+    // Check if today already used a joker
+    if (!sa.jours_niveau2.includes(t)) {
+      sa.jours_niveau2.push(t);
+      sa.jokers_utilises++;
+      if (sa.jokers_utilises >= 3) {
+        breakStreak(t);
+        return 'broken';
+      }
+      return 'joker';
+    }
+    // Same day — no additional joker cost
+    return 'joker-same-day';
+  }
+
+  return 'clean';
+}
+
+function breakStreak(breakDate) {
+  const sa = appData.streak_actuelle;
+  const duree = daysBetween(sa.debut, breakDate);
+  const achieved = MILESTONES.filter(m => m.days <= duree).map(m => m.days);
+
+  appData.streaks.push({
+    debut: sa.debut,
+    fin: breakDate,
+    duree: duree,
+    jokers_utilises: sa.jokers_utilises,
+    milestones: achieved
+  });
+
+  // Reset
+  appData.streak_actuelle = {
+    debut: breakDate,
+    jokers_utilises: 0,
+    jours_niveau2: []
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+//  TODAY LOG
+// ════════════════════════════════════════════════════════════
+function getTodayLog() {
+  const t = today();
+  let log = appData.logs.find(l => l.date === t);
+  if (!log) {
+    log = { date: t, boissons: [], eau_litres: null, poids_kg: null };
+    appData.logs.push(log);
+  }
+  return log;
+}
+
+function getYesterday() {
+  return addDays(today(), -1);
+}
+
+function getYesterdayLog() {
+  const y = getYesterday();
+  let log = appData.logs.find(l => l.date === y);
+  if (!log) {
+    log = { date: y, boissons: [], eau_litres: null, poids_kg: null };
+    appData.logs.push(log);
+  }
+  return log;
+}
+
+function isYesterdayValidated() {
+  // Returns true if user has explicitly validated yesterday's log
+  // OR if yesterday was already filled before today (loaded from Drive/localStorage)
+  const y = getYesterday();
+  // Check explicit validation flag
+  if (appData.yesterday_validated === y) return true;
+  return false;
+}
+
+function validateYesterday() {
+  const y = getYesterday();
+  appData.yesterday_validated = y;
+
+  // Persist the water/weight fields before hiding
+  const wVal = parseFloat(document.getElementById('yesterday-water').value);
+  const wgVal = parseFloat(document.getElementById('yesterday-weight').value);
+  const log = getYesterdayLog();
+  if (!isNaN(wVal)) log.eau_litres = wVal;
+  if (!isNaN(wgVal)) log.poids_kg = wgVal;
+
+  recomputeStreakFromLogs();
+  saveLocal();
+  scheduleDriveSync();
+  renderHome();
+  showToast('✓ Log d\'hier validé', 'success');
+}
+
+function saveTodayWater() {
+  const val = parseFloat(document.getElementById('today-water').value);
+  const log = getTodayLog();
+  log.eau_litres = isNaN(val) ? null : val;
+  saveLocal();
+  scheduleDriveSync();
+  renderHome();
+}
+
+function saveTodayWeight() {
+  const val = parseFloat(document.getElementById('today-weight').value);
+  const log = getTodayLog();
+  log.poids_kg = isNaN(val) ? null : val;
+  saveLocal();
+  scheduleDriveSync();
+}
+
+function saveYesterdayWater() {
+  const val = parseFloat(document.getElementById('yesterday-water').value);
+  const log = getYesterdayLog();
+  log.eau_litres = isNaN(val) ? null : val;
+  // No renderHome — card stays open until explicit validation
+}
+
+function saveYesterdayWeight() {
+  const val = parseFloat(document.getElementById('yesterday-weight').value);
+  const log = getYesterdayLog();
+  log.poids_kg = isNaN(val) ? null : val;
+  // No renderHome — card stays open until explicit validation
+}
+
+// ════════════════════════════════════════════════════════════
+//  MISSED DAYS CHECK — J-1 tolerance
+// ════════════════════════════════════════════════════════════
+function checkMissedDays() {
+  const sa = appData.streak_actuelle;
+  if (!sa.debut) return;
+
+  const t = today();
+  const yesterday = getYesterday();
+
+  // Walk every day from streak start to day-before-yesterday
+  // (yesterday is still in tolerance — checked in UI but not broken yet)
+  let d = sa.debut;
+  while (d < yesterday) {
+    const log = appData.logs.find(l => l.date === d);
+    const isEmpty = !log || (log.boissons.length === 0 && log.eau_litres === null && log.poids_kg === null);
+
+    if (isEmpty) {
+      // This day has no log and is beyond J-1 tolerance → break streak
+      const duree = daysBetween(sa.debut, d);
+      const achieved = MILESTONES.filter(m => m.days <= duree).map(m => m.days);
+
+      appData.streaks.push({
+        debut: sa.debut,
+        fin: d,
+        duree,
+        jokers_utilises: sa.jokers_utilises,
+        milestones: achieved,
+        raison: 'log_manquant'
+      });
+
+      appData.streak_actuelle = {
+        debut: d,
+        jokers_utilises: 0,
+        jours_niveau2: []
+      };
+
+      saveLocal();
+      scheduleDriveSync();
+
+      showToast(`⏰ Streak rompue — aucun log le ${formatDate(d)}`, 'error');
+      return; // Stop at first missed day — streak already reset
+    }
+
+    d = addDays(d, 1);
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  DRINK MODAL
+// ════════════════════════════════════════════════════════════
+function openDrinkModal(target = 'today') {
+  selectedDrink = null;
+  modalQty = 1;
+  modalTarget = target;
+  document.getElementById('modal-qty').textContent = '1';
+  document.getElementById('modal-add-btn').disabled = true;
+  document.getElementById('custom-drink-name').value = '';
+
+  // Update modal title to show context
+  const titleEl = document.querySelector('#drink-modal .modal-title');
+  if (titleEl) {
+    titleEl.textContent = target === 'yesterday' ? 'BOISSON D\'HIER' : 'AJOUTER UNE BOISSON';
+    titleEl.style.color = target === 'yesterday' ? 'var(--orange)' : '';
+  }
+
+  renderModalDrinks();
+  document.getElementById('drink-modal').classList.add('open');
+}
+
+function closeDrinkModal() {
+  document.getElementById('drink-modal').classList.remove('open');
+  selectedDrink = null;
+}
+
+function closeDrinkModalOutside(e) {
+  if (e.target === document.getElementById('drink-modal')) closeDrinkModal();
+}
+
+function renderModalDrinks() {
+  const all = getAllDrinks();
+  [4, 2, 1].forEach(level => {
+    const container = document.getElementById(`modal-drinks-${level}`);
+    container.innerHTML = '';
+    all.filter(d => d.niveau === level).forEach(drink => {
+      const btn = document.createElement('button');
+      btn.className = 'drink-btn';
+      btn.textContent = drink.nom;
+      btn.onclick = () => selectDrink(drink, btn);
+      container.appendChild(btn);
+    });
+  });
+}
+
+function selectDrink(drink, btn) {
+  selectedDrink = drink;
+  document.querySelectorAll('.drink-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('modal-add-btn').disabled = false;
+}
+
+function changeQty(delta) {
+  modalQty = Math.max(1, Math.min(5, modalQty + delta));
+  document.getElementById('modal-qty').textContent = modalQty;
+}
+
+function addCustomDrink() {
+  const name = document.getElementById('custom-drink-name').value.trim();
+  const level = parseInt(document.getElementById('custom-drink-level').value);
+  if (!name) return;
+
+  const all = getAllDrinks();
+  if (all.find(d => d.nom.toLowerCase() === name.toLowerCase())) {
+    showToast('Cette boisson existe déjà', 'error');
+    return;
+  }
+
+  appData.boissons_custom.push({ nom: name, niveau: level });
+  document.getElementById('custom-drink-name').value = '';
+  renderModalDrinks();
+  saveLocal();
+  scheduleDriveSync();
+  showToast(`"${name}" ajoutée aux boissons`, 'success');
+}
+
+function confirmAddDrink() {
+  if (!selectedDrink) return;
+
+  const log = modalTarget === 'yesterday' ? getYesterdayLog() : getTodayLog();
+  const existing = log.boissons.find(b => b.nom === selectedDrink.nom);
+  if (existing) {
+    existing.verres += modalQty;
+  } else {
+    log.boissons.push({ nom: selectedDrink.nom, niveau: selectedDrink.niveau, verres: modalQty });
+  }
+
+  // Process streak impact — only affects streak if logged for today
+  // Yesterday entries are retroactive: recompute from logs
+  let result;
+  if (modalTarget === 'yesterday') {
+    recomputeStreakFromLogs();
+    result = selectedDrink.niveau === 4 ? 'broken' : selectedDrink.niveau === 2 ? 'joker' : 'clean';
+  } else {
+    result = processNewDrink(selectedDrink);
+  }
+
+  saveLocal();
+  scheduleDriveSync();
+  closeDrinkModal();
+  renderHome();
+
+  const ctx = modalTarget === 'yesterday' ? ' (hier)' : '';
+  if (result === 'broken') {
+    showToast(`❌ Streak terminée${ctx} ! Retour à zéro.`, 'error');
+  } else if (result === 'joker') {
+    const remaining = 2 - appData.streak_actuelle.jokers_utilises;
+    showToast(`🟡 Joker utilisé${ctx} — ${remaining > 0 ? remaining + ' restant(s)' : 'Prochain = rupture !'}`, 'warning');
+  } else {
+    showToast(`✅ ${selectedDrink.nom}${ctx} — ${modalQty} verre(s) ajouté(s)`, 'success');
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  RENDER HOME
+// ════════════════════════════════════════════════════════════
+function renderHome() {
+  const { days, jokers } = computeStreak();
+  const record = getRecord();
+  const next = getNextMilestone(days);
+
+  document.getElementById('streak-current').textContent = days;
+  document.getElementById('streak-record').textContent = record;
+  document.getElementById('streak-next-milestone').textContent = next.days;
+
+  // Jokers display — 3 jokers total, 3rd breaks streak
+  // Used = jokers_utilises (each = 1 joker day used)
+  // 0 used → all white; 1 used → 1 filled; 2 used → 2 filled (DANGER); 3 used → broken (handled separately)
+  const j = appData.streak_actuelle.jokers_utilises;
+  const dots = ['j1','j2','j3'];
+  dots.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('used','dead');
+    if (i < j && j < 3) el.classList.add('used');
+  });
+  const jLabel = document.getElementById('jokers-label');
+  jLabel.textContent = j === 0 ? 'JOKERS' : j === 1 ? '2 RESTANTS' : j === 2 ? '⚠️ DERNIER JOKER' : 'JOKERS';
+
+  // Milestone progress
+  const prevMilestone = MILESTONES.filter(m => m.days <= days).pop();
+  const prevDays = prevMilestone ? prevMilestone.days : 0;
+  const pct = Math.min(100, Math.round(((days - prevDays) / (next.days - prevDays)) * 100));
+  document.getElementById('milestone-name').textContent = `${next.icon} OBJECTIF ${next.days} JOURS`;
+  document.getElementById('milestone-days-left').textContent = `${next.days - days} jour(s) restant(s)`;
+  document.getElementById('milestone-progress').style.width = pct + '%';
+
+  // Stats
+  const waterTotal = appData.logs.reduce((s, l) => s + (l.eau_litres || 0), 0);
+  const daysWithLogs = appData.logs.filter(l => l.eau_litres !== null).length;
+  const waterAvg = daysWithLogs > 0 ? (waterTotal / daysWithLogs).toFixed(1) : 0;
+  const sodasTotal = appData.logs.reduce((s, l) =>
+    s + l.boissons.filter(b => b.niveau === 4).reduce((ss, b) => ss + b.verres, 0), 0);
+
+  document.getElementById('stat-water-total').textContent = waterTotal.toFixed(1) + 'L';
+  document.getElementById('stat-water-avg').textContent = waterAvg + 'L';
+  document.getElementById('stat-sodas-total').textContent = sodasTotal;
+
+  // Yesterday card — show only if not yet validated today
+  const ycCard = document.getElementById('yesterday-card');
+  const showYesterday = !isYesterdayValidated();
+  ycCard.style.display = showYesterday ? 'block' : 'none';
+
+  if (showYesterday) {
+    // Show time remaining before midnight
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(23, 59, 59, 0);
+    const hoursLeft = Math.floor((midnight - now) / 3600000);
+    const minsLeft = Math.floor(((midnight - now) % 3600000) / 60000);
+    document.getElementById('yesterday-deadline').textContent =
+      `${hoursLeft}h${String(minsLeft).padStart(2,'0')} restantes`;
+  }
+
+  // Render yesterday entries (if any were added)
+  const yLog = appData.logs.find(l => l.date === getYesterday());
+  const yContainer = document.getElementById('yesterday-entries');
+  if (yContainer) {
+    yContainer.innerHTML = '';
+    if (yLog && yLog.boissons.length > 0) {
+      yLog.boissons.forEach((b, i) => {
+        const item = document.createElement('div');
+        item.className = 'entry-item';
+        item.innerHTML = `
+          <div class="entry-left">
+            <div class="entry-level" style="background:${getLevelColor(b.niveau)}"></div>
+            <div>
+              <div class="entry-name">${b.nom}</div>
+              <div class="entry-meta">${b.verres} verre(s) × 33cl</div>
+            </div>
+          </div>
+          <button class="entry-delete" onclick="deleteYesterdayDrink(${i})">✕</button>
+        `;
+        yContainer.appendChild(item);
+      });
+    }
+    // Pre-fill yesterday water/weight if set
+    const ywInput = document.getElementById('yesterday-water');
+    const ywgInput = document.getElementById('yesterday-weight');
+    if (yLog && yLog.eau_litres !== null && ywInput !== document.activeElement) ywInput.value = yLog.eau_litres;
+    if (yLog && yLog.poids_kg !== null && ywgInput !== document.activeElement) ywgInput.value = yLog.poids_kg;
+  }
+  const container = document.getElementById('today-entries');
+  container.innerHTML = '';
+
+  if (log.boissons.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:16px;"><p>Aucune boisson loggée aujourd\'hui.</p></div>';
+  } else {
+    log.boissons.forEach((b, i) => {
+      const item = document.createElement('div');
+      item.className = 'entry-item';
+      item.innerHTML = `
+        <div class="entry-left">
+          <div class="entry-level" style="background:${getLevelColor(b.niveau)}"></div>
+          <div>
+            <div class="entry-name">${b.nom}</div>
+            <div class="entry-meta">${b.verres} verre(s) × 33cl</div>
+          </div>
+        </div>
+        <button class="entry-delete" onclick="deleteTodayDrink(${i})">✕</button>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  // Pre-fill today's water and weight
+  const waterInput = document.getElementById('today-water');
+  const weightInput = document.getElementById('today-weight');
+  if (log.eau_litres !== null && waterInput !== document.activeElement) {
+    waterInput.value = log.eau_litres;
+  }
+  if (log.poids_kg !== null && weightInput !== document.activeElement) {
+    weightInput.value = log.poids_kg;
+  }
+}
+
+function deleteTodayDrink(index) {
+  const log = getTodayLog();
+  log.boissons.splice(index, 1);
+  // Recompute streak state for today from scratch
+  recomputeStreakFromLogs();
+  saveLocal();
+  scheduleDriveSync();
+  renderHome();
+  showToast('Boisson supprimée', 'info');
+}
+
+function deleteYesterdayDrink(index) {
+  const log = getYesterdayLog();
+  log.boissons.splice(index, 1);
+  recomputeStreakFromLogs();
+  saveLocal();
+  scheduleDriveSync();
+  renderHome();
+  showToast('Boisson supprimée (hier)', 'info');
+}
+
+// ════════════════════════════════════════════════════════════
+//  STREAK RECOMPUTE (after deletion)
+// ════════════════════════════════════════════════════════════
+function recomputeStreakFromLogs() {
+  // Find the start of the current streak by walking back through logs
+  const sortedLogs = [...appData.logs].sort((a,b) => a.date.localeCompare(b.date));
+  const t = today();
+
+  // Reset current streak
+  let streakStart = t;
+  let jokersUsed = 0;
+  const jokerDays = [];
+
+  // Walk backwards from today
+  let d = t;
+  while (true) {
+    const log = appData.logs.find(l => l.date === d);
+    if (!log || log.boissons.length === 0) {
+      // Clean day or no log — continue streak back one day only if not too far
+      const prev = addDays(d, -1);
+      const prevLog = appData.logs.find(l => l.date === prev);
+      if (!prevLog || prevLog.boissons.length === 0) {
+        // Continue checking previous days only if today is start
+        if (d === t) { d = prev; streakStart = prev; continue; }
+        break;
+      }
+      d = prev;
+      continue;
+    }
+
+    const hasLevel4 = log.boissons.some(b => b.niveau === 4);
+    const hasLevel2 = log.boissons.some(b => b.niveau === 2);
+
+    if (hasLevel4) break;
+    if (hasLevel2) {
+      jokerDays.unshift(d);
+      jokersUsed++;
+      if (jokersUsed >= 3) break;
+    }
+
+    streakStart = d;
+    d = addDays(d, -1);
+
+    // Safety: don't go back more than 2 years
+    if (daysBetween(d, t) > 730) break;
+  }
+
+  appData.streak_actuelle = {
+    debut: streakStart,
+    jokers_utilises: jokersUsed,
+    jours_niveau2: jokerDays
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+//  RENDER STATS
+// ════════════════════════════════════════════════════════════
+function renderStats() {
+  const all = appData.logs;
+
+  let total4 = 0, total2 = 0, total1 = 0;
+  const drinkCounts = {};
+
+  all.forEach(log => {
+    log.boissons.forEach(b => {
+      if (b.niveau === 4) total4 += b.verres;
+      if (b.niveau === 2) total2 += b.verres;
+      if (b.niveau === 1) total1 += b.verres;
+      drinkCounts[b.nom] = (drinkCounts[b.nom] || { count: 0, niveau: b.niveau });
+      drinkCounts[b.nom].count += b.verres;
+    });
+  });
+
+  const waterTotal = all.reduce((s,l) => s + (l.eau_litres || 0), 0);
+
+  document.getElementById('s-sodas').textContent = total4;
+  document.getElementById('s-level2').textContent = total2;
+  document.getElementById('s-level1').textContent = total1;
+  document.getElementById('s-water').textContent = waterTotal.toFixed(1) + 'L';
+
+  // Drinks breakdown
+  const breakdown = document.getElementById('drinks-breakdown');
+  const sorted = Object.entries(drinkCounts).sort((a,b) => b[1].count - a[1].count);
+
+  if (sorted.length === 0) {
+    breakdown.innerHTML = '<div class="empty-state"><div class="empty-icon">🥤</div><p>Aucune boisson loggée pour l\'instant.</p></div>';
+  } else {
+    breakdown.innerHTML = sorted.map(([nom, data]) => `
+      <div class="drink-stat-item">
+        <div class="drink-stat-name">
+          <div style="width:8px;height:8px;border-radius:50%;background:${getLevelColor(data.niveau)};flex-shrink:0"></div>
+          ${nom}
+        </div>
+        <div class="drink-stat-count" style="color:${getLevelColor(data.niveau)}">${data.count}</div>
+      </div>
+    `).join('');
+  }
+
+  // Weight history
+  const weights = all.filter(l => l.poids_kg !== null)
+    .sort((a,b) => b.date.localeCompare(a.date))
+    .slice(0, 15);
+
+  const wContainer = document.getElementById('weight-history-list');
+  if (weights.length === 0) {
+    wContainer.innerHTML = '<div class="empty-state"><div class="empty-icon">⚖️</div><p>Aucun poids enregistré.</p></div>';
+  } else {
+    let prev = null;
+    wContainer.innerHTML = weights.map(l => {
+      let trend = '';
+      if (prev !== null) {
+        const diff = (l.poids_kg - prev).toFixed(1);
+        trend = diff > 0 ? `<span style="color:var(--red);font-size:11px">▲ +${diff}</span>` :
+                diff < 0 ? `<span style="color:var(--green);font-size:11px">▼ ${diff}</span>` :
+                `<span style="color:var(--text3);font-size:11px">—</span>`;
+      }
+      prev = l.poids_kg;
+      return `
+        <div class="weight-row">
+          <span class="weight-date">${formatDate(l.date)}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            ${trend}
+            <span class="weight-val">${l.poids_kg}</span>
+            <span class="weight-unit">KG</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  CALENDAR
+// ════════════════════════════════════════════════════════════
+function initCalendar() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  populateYearSelect();
+  renderCalendar();
+}
+
+function populateYearSelect() {
+  const sel = document.getElementById('cal-year-select');
+  if (!sel) return;
+  sel.innerHTML = '';
+  const currentYear = new Date().getFullYear();
+  // Start from earliest log year or 2024, whichever is earlier
+  const logYears = appData.logs.map(l => parseInt(l.date.slice(0,4))).filter(Boolean);
+  const startYear = logYears.length ? Math.min(...logYears, 2024) : 2024;
+  for (let y = startYear; y <= currentYear + 1; y++) {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    sel.appendChild(opt);
+  }
+  sel.value = calYear;
+}
+
+function syncSelects() {
+  const mSel = document.getElementById('cal-month-select');
+  const ySel = document.getElementById('cal-year-select');
+  if (mSel) mSel.value = calMonth;
+  if (ySel) ySel.value = calYear;
+}
+
+function calPrev() {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  syncSelects();
+  renderCalendar();
+}
+
+function calNext() {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  syncSelects();
+  renderCalendar();
+}
+
+function calGoToday() {
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  syncSelects();
+  renderCalendar();
+}
+
+function calJumpToSelected() {
+  const mSel = document.getElementById('cal-month-select');
+  const ySel = document.getElementById('cal-year-select');
+  const newMonth = mSel ? parseInt(mSel.value) : calMonth;
+  const newYear  = ySel && ySel.value ? parseInt(ySel.value) : calYear;
+  if (!isNaN(newMonth)) calMonth = newMonth;
+  if (!isNaN(newYear))  calYear  = newYear;
+  renderCalendar();
+}
+
+function getDayStatus(dateStr) {
+  const log = appData.logs.find(l => l.date === dateStr);
+  if (!log) return 'no-data';
+
+  const hasLevel4 = log.boissons.some(b => b.niveau === 4);
+  const hasLevel2 = log.boissons.some(b => b.niveau === 2);
+
+  if (hasLevel4) return 'broken';
+  if (hasLevel2) return 'joker';
+  if (log.boissons.length > 0 || log.eau_litres !== null || log.poids_kg !== null) return 'clean';
+  return 'no-data';
+}
+
+function renderCalendar() {
+  // Safety: repopulate year select if empty (e.g. first render before tab was opened)
+  const ySel = document.getElementById('cal-year-select');
+  if (ySel && ySel.options.length === 0) populateYearSelect();
+
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('cal-title').textContent = `${months[calMonth]} ${calYear}`;
+  syncSelects();
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  const dayHeaders = ['L','M','M','J','V','S','D'];
+  dayHeaders.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-header';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const startDow = (firstDay.getDay() + 6) % 7; // Monday=0
+
+  for (let i = 0; i < startDow; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    grid.appendChild(el);
+  }
+
+  const t = today();
+  let selectedCalDay = null; // track currently open day detail
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = d;
+
+    if (dateStr > t) {
+      el.classList.add('future');
+    } else {
+      const status = getDayStatus(dateStr);
+      el.classList.add(status);
+      el.onclick = () => toggleDayDetail(dateStr);
+    }
+    if (dateStr === t) el.classList.add('today');
+
+    grid.appendChild(el);
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  STREAKS LIST
+// ════════════════════════════════════════════════════════════
+function renderStreaksList() {
+  const container = document.getElementById('streaks-list');
+  const all = [...appData.streaks].sort((a,b) => b.duree - a.duree);
+
+  if (all.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔥</div><p>Aucune streak terminée pour l\'instant. Continue !</p></div>';
+    return;
+  }
+
+  container.innerHTML = all.map((s, i) => {
+    const badges = s.milestones.map(d => {
+      const m = MILESTONES.find(ms => ms.days === d);
+      return m ? `<span class="badge badge-gold">${m.icon} ${m.label}</span>` : '';
+    }).join('');
+
+    const isRecord = s.duree === Math.max(...appData.streaks.map(x => x.duree));
+    return `
+      <div class="streak-item">
+        <div class="streak-item-left">
+          <div class="streak-item-days">${s.duree}j ${isRecord ? '🏆' : ''}</div>
+          <div class="streak-item-dates">${formatDate(s.debut)} → ${formatDate(s.fin)}</div>
+          ${badges ? `<div class="streak-item-badges" style="margin-top:6px">${badges}</div>` : ''}
+        </div>
+        <div style="font-family:var(--font-label);font-size:10px;color:var(--text3);text-align:right">
+          ${s.jokers_utilises} joker(s)<br>utilisé(s)
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  RULES TAB
+// ════════════════════════════════════════════════════════════
+function renderRules() {
+  // Milestones
+  const mlContainer = document.getElementById('milestones-rules-list');
+  const currentStreak = computeStreak().days;
+  mlContainer.innerHTML = MILESTONES.map(m => {
+    const achieved = currentStreak >= m.days;
+    return `
+      <div class="milestone-list-item">
+        <div class="milestone-icon">${m.icon}</div>
+        <div class="milestone-info">
+          <div class="milestone-days-label">${m.days} JOURS</div>
+          <div class="milestone-desc">${m.desc}</div>
+        </div>
+        ${achieved ? '<span class="milestone-achieved">✓ ATTEINT</span>' : ''}
+      </div>
+    `;
+  }).join('');
+
+  // Classifications
+  const all = getAllDrinks();
+  [4, 2, 1].forEach(level => {
+    const container = document.getElementById(`classif-level${level}`);
+    const rule = level === 4 ? 'RUPTURE IMMÉDIATE' : level === 2 ? 'UTILISE 1 JOKER / JOUR' : 'AUCUNE RESTRICTION';
+    container.innerHTML = all.filter(d => d.niveau === level).map(d => `
+      <div class="drink-classif-item">
+        <div class="classif-level" style="background:${getLevelColor(level)}22;border:1px solid ${getLevelColor(level)}44">
+          <div style="width:8px;height:8px;border-radius:50%;background:${getLevelColor(level)}"></div>
+        </div>
+        <div class="classif-info">
+          <div class="classif-name">${d.nom}</div>
+          <div class="classif-rule">${rule}</div>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  CALENDAR DAY DETAIL
+// ════════════════════════════════════════════════════════════
+let openCalDay = null;
+
+function toggleDayDetail(dateStr) {
+  const panel = document.getElementById('cal-day-detail');
+
+  if (openCalDay === dateStr) {
+    // Same day tapped again → close
+    panel.style.display = 'none';
+    openCalDay = null;
+    return;
+  }
+
+  openCalDay = dateStr;
+  renderDayDetail(dateStr);
+  panel.style.display = 'block';
+}
+
+function renderDayDetail(dateStr) {
+  const months = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+  const [y, m, d] = dateStr.split('-');
+  const label = `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+
+  document.getElementById('cal-detail-title').textContent = label;
+
+  const status = getDayStatus(dateStr);
+  const statusLabels = { clean: 'Clean', joker: 'Joker utilisé', broken: 'Rupture', 'no-data': 'Aucune donnée' };
+  document.getElementById('cal-detail-status-badge').innerHTML =
+    `<span class="status-badge ${status}">${statusLabels[status]}</span>`;
+
+  const log = appData.logs.find(l => l.date === dateStr);
+  const body = document.getElementById('cal-detail-body');
+
+  if (!log || (log.boissons.length === 0 && log.eau_litres === null && log.poids_kg === null)) {
+    body.innerHTML = '<div style="font-family:var(--font-body);font-size:13px;color:var(--text3);padding:8px 0;">Aucune donnée enregistrée pour ce jour.</div>';
+    return;
+  }
+
+  let html = '';
+
+  // Boissons
+  if (log.boissons.length > 0) {
+    log.boissons.forEach(b => {
+      html += `
+        <div class="day-detail-drink">
+          <div style="width:8px;height:8px;border-radius:50%;background:${getLevelColor(b.niveau)};flex-shrink:0;"></div>
+          <span style="flex:1;">${b.nom}</span>
+          <span style="font-family:var(--font-label);font-size:11px;color:var(--text3);">${b.verres} verre(s)</span>
+        </div>
+      `;
+    });
+  }
+
+  // Eau
+  if (log.eau_litres !== null) {
+    html += `
+      <div class="day-detail-stat">
+        <span class="day-detail-stat-label">💧 Eau</span>
+        <span class="day-detail-stat-val text-blue">${log.eau_litres}L</span>
+      </div>
+    `;
+  }
+
+  // Poids
+  if (log.poids_kg !== null) {
+    html += `
+      <div class="day-detail-stat">
+        <span class="day-detail-stat-label">⚖️ Poids</span>
+        <span class="day-detail-stat-val text-blue">${log.poids_kg} kg</span>
+      </div>
+    `;
+  }
+
+  body.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════════
+//  WEIGHT TAB
+// ════════════════════════════════════════════════════════════
+function saveWeightTarget() {
+  const val = parseFloat(document.getElementById('w-target-input').value);
+  appData.settings.weight_target = isNaN(val) ? null : val;
+  saveLocal();
+  scheduleDriveSync();
+  renderWeight();
+}
+
+function renderWeight() {
+  const weights = appData.logs
+    .filter(l => l.poids_kg !== null)
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const target = appData.settings.weight_target || null;
+
+  // Pre-fill target input
+  const tInput = document.getElementById('w-target-input');
+  if (tInput && target !== null && tInput !== document.activeElement) tInput.value = target;
+
+  if (weights.length === 0) {
+    ['w-current','w-start','w-delta','w-min','w-max','w-avg','w-entries','w-target-display'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '—';
+    });
+    document.getElementById('w-progress-section').style.display = 'none';
+    document.getElementById('weight-chart-empty').style.display = 'flex';
+    document.getElementById('weight-history-list').innerHTML =
+      '<div class="empty-state"><div class="empty-icon">⚖️</div><p>Saisis ton premier poids sur l\'accueil pour démarrer.</p></div>';
+    return;
+  }
+
+  const first = weights[0].poids_kg;
+  const last  = weights[weights.length - 1].poids_kg;
+  const vals  = weights.map(w => w.poids_kg);
+  const minW  = Math.min(...vals);
+  const maxW  = Math.max(...vals);
+  const avgW  = (vals.reduce((s,v) => s+v, 0) / vals.length).toFixed(1);
+  const delta = (last - first).toFixed(1);
+  const deltaStr = delta > 0 ? `+${delta} kg` : `${delta} kg`;
+  const deltaColor = delta < 0 ? 'var(--green)' : delta > 0 ? 'var(--red)' : 'var(--text)';
+
+  document.getElementById('w-current').textContent = last;
+  document.getElementById('w-start').textContent = first;
+  document.getElementById('w-delta').textContent = deltaStr;
+  document.getElementById('w-delta').style.color = deltaColor;
+  document.getElementById('w-min').textContent = minW;
+  document.getElementById('w-max').textContent = maxW;
+  document.getElementById('w-avg').textContent = avgW;
+  document.getElementById('w-entries').textContent = weights.length;
+  document.getElementById('w-target-display').textContent = target !== null ? target + ' kg' : '—';
+
+  // Progress toward target
+  const progSection = document.getElementById('w-progress-section');
+  if (target !== null && first !== target) {
+    progSection.style.display = 'block';
+    const totalNeeded = Math.abs(first - target);
+    const achieved    = Math.abs(first - last);
+    const pct = Math.min(100, Math.round((achieved / totalNeeded) * 100));
+    document.getElementById('w-progress-pct').textContent = pct + '%';
+    document.getElementById('w-progress-bar').style.width = pct + '%';
+  } else {
+    progSection.style.display = 'none';
+  }
+
+  // Draw chart
+  drawWeightChart(weights, target);
+
+  // History list (most recent first)
+  const sorted = [...weights].reverse().slice(0, 30);
+  let prevKg = null;
+  document.getElementById('weight-history-list').innerHTML = sorted.map(l => {
+    let trend = '';
+    if (prevKg !== null) {
+      const diff = parseFloat((l.poids_kg - prevKg).toFixed(1));
+      trend = diff > 0 ? `<span style="color:var(--red);font-size:11px;margin-right:6px">▲ +${diff}</span>`
+            : diff < 0 ? `<span style="color:var(--green);font-size:11px;margin-right:6px">▼ ${diff}</span>`
+            : `<span style="color:var(--text3);font-size:11px;margin-right:6px">—</span>`;
+    }
+    prevKg = l.poids_kg;
+    return `
+      <div class="weight-row">
+        <span class="weight-date">${formatDate(l.date)}</span>
+        <div style="display:flex;align-items:center;">
+          ${trend}
+          <span class="weight-val">${l.poids_kg}</span>
+          <span class="weight-unit" style="margin-left:4px;">KG</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function drawWeightChart(weights, target) {
+  const canvas = document.getElementById('weight-chart');
+  const emptyMsg = document.getElementById('weight-chart-empty');
+  if (!canvas) return;
+
+  if (weights.length < 2) {
+    emptyMsg.style.display = 'flex';
+    return;
+  }
+  emptyMsg.style.display = 'none';
+
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width || 300;
+  const H = 180;
+
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  const PAD = { top: 12, right: 16, bottom: 28, left: 40 };
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  const vals = weights.map(w => w.poids_kg);
+  let minV = Math.min(...vals);
+  let maxV = Math.max(...vals);
+  if (target !== null) { minV = Math.min(minV, target); maxV = Math.max(maxV, target); }
+  const padding = Math.max((maxV - minV) * 0.15, 0.5);
+  minV -= padding; maxV += padding;
+  const range = maxV - minV || 1;
+
+  const toX = (i) => PAD.left + (i / (weights.length - 1)) * cW;
+  const toY = (v) => PAD.top + cH - ((v - minV) / range) * cH;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = '#252525';
+  ctx.lineWidth = 1;
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = PAD.top + cH * f;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+    const val = (maxV - range * f).toFixed(1);
+    ctx.fillStyle = '#555';
+    ctx.font = `${10 * dpr / dpr}px sans-serif`;
+    ctx.textAlign = 'right';
+    ctx.fillText(val, PAD.left - 4, y + 4);
+  });
+
+  // Target line
+  if (target !== null) {
+    const ty = toY(target);
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = 'rgba(93,186,116,0.6)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(PAD.left, ty); ctx.lineTo(PAD.left + cW, ty); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(93,186,116,0.8)';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('Objectif', PAD.left + 4, ty - 4);
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + cH);
+  grad.addColorStop(0, 'rgba(74,158,255,0.25)');
+  grad.addColorStop(1, 'rgba(74,158,255,0)');
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(vals[0]));
+  weights.forEach((w, i) => { if (i > 0) ctx.lineTo(toX(i), toY(w.poids_kg)); });
+  ctx.lineTo(toX(weights.length - 1), PAD.top + cH);
+  ctx.lineTo(toX(0), PAD.top + cH);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#4a9eff';
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  weights.forEach((w, i) => {
+    i === 0 ? ctx.moveTo(toX(i), toY(w.poids_kg)) : ctx.lineTo(toX(i), toY(w.poids_kg));
+  });
+  ctx.stroke();
+
+  // Dots
+  weights.forEach((w, i) => {
+    ctx.beginPath();
+    ctx.arc(toX(i), toY(w.poids_kg), 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#4a9eff';
+    ctx.fill();
+  });
+
+  // X-axis labels (first, middle, last)
+  ctx.fillStyle = '#555';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  const indices = [0, Math.floor(weights.length / 2), weights.length - 1];
+  indices.forEach(i => {
+    const lbl = weights[i].date.slice(5).replace('-', '/');
+    ctx.fillText(lbl, toX(i), H - 6);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  TAB NAVIGATION
+// ════════════════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  document.getElementById(`nav-${name}`).classList.add('active');
+
+  if (name === 'home')    renderHome();
+  if (name === 'stats')   renderStats();
+  if (name === 'history') { openCalDay = null; populateYearSelect(); renderCalendar(); renderStreaksList(); }
+  if (name === 'weight')  renderWeight();
+  if (name === 'rules')   renderRules();
+}
+
+// ════════════════════════════════════════════════════════════
+//  LOCAL STORAGE
+// ════════════════════════════════════════════════════════════
+function saveLocal() {
+  try {
+    localStorage.setItem('no-sugar-data', JSON.stringify(appData));
+  } catch(e) {}
+}
+
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem('no-sugar-data');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      appData = { ...appData, ...parsed };
+    }
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════════════════════
+//  GOOGLE DRIVE
+// ════════════════════════════════════════════════════════════
+function initDrive() {
+  window.google?.accounts?.id?.initialize?.({ client_id: CLIENT_ID });
+  tokenClient = window.google?.accounts?.oauth2?.initTokenClient?.({
+    client_id: CLIENT_ID,
+    scope: SCOPE,
+    callback: handleTokenResponse,
+    error_callback: (err) => {
+      setDriveStatus('error');
+      showToast('Erreur de connexion Google', 'error');
+    }
+  });
+
+  // Try silent token refresh
+  const savedToken = sessionStorage.getItem('drive-token');
+  if (savedToken) {
+    driveToken = savedToken;
+    setDriveStatus('ok');
+    showDriveConnected();
+    driveLoad();
+  }
+}
+
+function handleTokenResponse(resp) {
+  if (resp.error) {
+    setDriveStatus('error');
+    showToast('Connexion Drive échouée : ' + resp.error, 'error');
+    return;
+  }
+  driveToken = resp.access_token;
+  sessionStorage.setItem('drive-token', driveToken);
+  setDriveStatus('ok');
+  showDriveConnected();
+  showToast('✓ Connecté à Google Drive', 'success');
+  driveLoad();
+}
+
+function driveConnect() {
+  if (!tokenClient) {
+    showToast('API Google non disponible', 'error');
+    return;
+  }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function driveDisconnect() {
+  if (driveToken) window.google?.accounts?.oauth2?.revoke?.(driveToken);
+  driveToken = null;
+  driveFileId = null;
+  sessionStorage.removeItem('drive-token');
+  setDriveStatus('disconnected');
+  showDriveDisconnected();
+  showToast('Déconnecté de Google Drive', 'info');
+}
+
+function showDriveConnected() {
+  document.getElementById('drive-connect-btn').style.display = 'none';
+  document.getElementById('drive-disconnect-btn').style.display = '';
+}
+
+function showDriveDisconnected() {
+  document.getElementById('drive-connect-btn').style.display = '';
+  document.getElementById('drive-disconnect-btn').style.display = 'none';
+}
+
+function setDriveStatus(status) {
+  driveStatus = status;
+  const dot = document.getElementById('drive-dot');
+  const text = document.getElementById('drive-status-text');
+  dot.className = `drive-dot ${status}`;
+  const labels = {
+    ok: 'Synchronisé',
+    syncing: 'Synchronisation...',
+    error: 'Erreur de sync',
+    disconnected: 'Déconnecté'
+  };
+  text.textContent = labels[status] || 'Inconnu';
+}
+
+async function driveApiCall(method, url, body) {
+  if (!driveToken) return null;
+  try {
+    const opts = {
+      method,
+      headers: { 'Authorization': `Bearer ${driveToken}` }
+    };
+    if (body) {
+      if (typeof body === 'string') {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = body;
+      } else {
+        opts.body = body;
+      }
+    }
+    const resp = await fetch(url, opts);
+    if (resp.status === 401) {
+      driveToken = null;
+      sessionStorage.removeItem('drive-token');
+      setDriveStatus('disconnected');
+      showDriveDisconnected();
+      showToast('Session expirée — reconnecte-toi', 'error');
+      return null;
+    }
+    if (!resp.ok) return null;
+    const ct = resp.headers.get('content-type') || '';
+    if (ct.includes('application/json')) return resp.json();
+    return resp.text();
+  } catch(e) {
+    setDriveStatus('error');
+    return null;
+  }
+}
+
+async function findDriveFile() {
+  const list = await driveApiCall('GET',
+    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name)&q=name%3D%22' + DRIVE_FILE + '%22');
+  if (list && list.files && list.files.length > 0) {
+    driveFileId = list.files[0].id;
+    return driveFileId;
+  }
+  return null;
+}
+
+async function driveSaveNow() {
+  if (!driveToken) { showToast('Non connecté à Drive', 'error'); return; }
+  setDriveStatus('syncing');
+
+  const content = JSON.stringify(appData);
+  const blob = new Blob([content], { type: 'application/json' });
+
+  let fileId = driveFileId || await findDriveFile();
+
+  try {
+    if (fileId) {
+      // Update
+      await driveApiCall('PATCH',
+        `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, blob);
+    } else {
+      // Create
+      const meta = { name: DRIVE_FILE, parents: ['appDataFolder'] };
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+      form.append('file', blob);
+      const created = await driveApiCall('POST',
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', form);
+      if (created && created.id) driveFileId = created.id;
+    }
+
+    setDriveStatus('ok');
+    const now = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    appData.meta.last_sync = now;
+    document.getElementById('drive-last-sync').textContent = `Dernière sync : ${now}`;
+    showToast('✓ Sauvegardé sur Drive', 'success');
+  } catch(e) {
+    setDriveStatus('error');
+    showToast('Erreur lors de la sauvegarde', 'error');
+  }
+}
+
+async function driveLoad() {
+  if (!driveToken) return;
+  setDriveStatus('syncing');
+
+  const fileId = await findDriveFile();
+  if (!fileId) {
+    setDriveStatus('ok');
+    return;
+  }
+
+  const raw = await driveApiCall('GET',
+    `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`);
+  if (raw && typeof raw === 'object') {
+    appData = { ...appData, ...raw };
+    saveLocal();
+    renderHome();
+    setDriveStatus('ok');
+    showToast('✓ Données rechargées depuis Drive', 'success');
+  } else if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      appData = { ...appData, ...parsed };
+      saveLocal();
+      renderHome();
+      setDriveStatus('ok');
+      showToast('✓ Données rechargées depuis Drive', 'success');
+    } catch(e) {
+      setDriveStatus('error');
+    }
+  } else {
+    setDriveStatus('ok');
+  }
+}
+
+function scheduleDriveSync() {
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(driveSaveNow, 2000);
+}
+
+// ════════════════════════════════════════════════════════════
+//  EXPORT / IMPORT / RESET
+// ════════════════════════════════════════════════════════════
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `no-sugar-backup-${today()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Export téléchargé', 'success');
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      appData = { ...appData, ...parsed };
+      saveLocal();
+      scheduleDriveSync();
+      renderHome();
+      showToast('✓ Import réussi', 'success');
+    } catch(err) {
+      showToast('Fichier JSON invalide', 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function openResetModal() {
+  document.getElementById('reset-modal').classList.add('open');
+}
+
+function closeResetModal() {
+  document.getElementById('reset-modal').classList.remove('open');
+}
+
+function closeResetModalOutside(e) {
+  if (e.target === document.getElementById('reset-modal')) closeResetModal();
+}
+
+function confirmReset() {
+  appData = {
+    logs: [],
+    streaks: [],
+    streak_actuelle: { debut: today(), jokers_utilises: 0, jours_niveau2: [] },
+    boissons_custom: [],
+    settings: { prenom: 'Samy', weight_target: null },
+    yesterday_validated: null,
+    meta: { created: today(), last_sync: null }
+  };
+  saveLocal();
+  scheduleDriveSync();
+  closeResetModal();
+  renderHome();
+  showToast('Données réinitialisées', 'info');
+}
+
+// ════════════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════════════
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3100);
+}
+
+// ════════════════════════════════════════════════════════════
+//  iOS INSTALL BANNER
+// ════════════════════════════════════════════════════════════
+function checkIOSInstall() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  const dismissed = localStorage.getItem('ios-banner-dismissed');
+  if (isIOS && !isStandalone && !dismissed) {
+    setTimeout(() => {
+      document.getElementById('ios-banner').classList.add('show');
+    }, 2000);
+  }
+}
+
+function dismissIOSBanner() {
+  document.getElementById('ios-banner').classList.remove('show');
+  localStorage.setItem('ios-banner-dismissed', '1');
+}
+
+// ════════════════════════════════════════════════════════════
+//  PWA — MANIFEST & SERVICE WORKER
+// ════════════════════════════════════════════════════════════
+function setupPWA() {
+  // Manifest
+  const manifest = {
+    name: 'NO ADDED SUGAR',
+    short_name: 'NO ADDED SUGAR',
+    description: 'Tracker de sevrage sucre & sodas',
+    start_url: './',
+    display: 'standalone',
+    background_color: '#080808',
+    theme_color: '#080808',
+    orientation: 'portrait',
+    icons: [{ src: generateIcon(), sizes: '180x180', type: 'image/png' }]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = url;
+  document.head.appendChild(link);
+
+  // Apple touch icon
+  const iconUrl = generateIcon();
+  const touchIcon = document.createElement('link');
+  touchIcon.rel = 'apple-touch-icon';
+  touchIcon.href = iconUrl;
+  document.head.appendChild(touchIcon);
+
+  // Service Worker
+  const swCode = `
+    const CACHE = 'no-sugar-v1';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('./index.html')))
+      );
+    });
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(swBlob);
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(swUrl).catch(() => {});
+  }
+}
+
+function generateIcon() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 180; canvas.height = 180;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#080808';
+  ctx.fillRect(0, 0, 180, 180);
+
+  // Red circle
+  ctx.beginPath();
+  ctx.arc(90, 90, 80, 0, Math.PI * 2);
+  ctx.strokeStyle = '#E8192C';
+  ctx.lineWidth = 6;
+  ctx.stroke();
+
+  // NAS text
+  ctx.fillStyle = '#E8192C';
+  ctx.font = 'bold 38px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('NAS', 90, 90);
+
+  return canvas.toDataURL('image/png');
+}
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+function init() {
+  loadLocal();
+
+  // Ensure streak has a start date
+  if (!appData.streak_actuelle.debut) {
+    appData.streak_actuelle.debut = today();
+  }
+
+  // Check for missed days beyond J-1 tolerance
+  checkMissedDays();
+
+  setupPWA();
+  renderHome();
+  renderModalDrinks();
+  initCalendar();
+  checkIOSInstall();
+
+  // Init Drive after GIS loads
+  window.addEventListener('load', () => {
+    setTimeout(initDrive, 1000);
+  });
+}
+
+init();
+</script>
+</body>
+</html>
