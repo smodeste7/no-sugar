@@ -2712,87 +2712,81 @@ function loadLocal() {
 }
 
 // ════════════════════════════════════════════════════════════
-//  GOOGLE DRIVE
+//  GOOGLE DRIVE — pattern identique à Modeste Training
 // ════════════════════════════════════════════════════════════
-function initDrive() {
-  // Guard — GIS not loaded yet
-  if (!window.google?.accounts?.oauth2?.initTokenClient) {
-    return; // waitForGIS will retry
-  }
 
-  tokenClient = window.google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPE,
-    callback: handleTokenResponse,
-    error_callback: () => {
-      setDriveStatus('error');
-      showToast('Erreur de connexion Google', 'error');
-    }
+// ── Init GIS client (Promise + polling) ──
+function initGoogleDrive() {
+  return new Promise((resolve) => {
+    const check = () => {
+      if (window.google && window.google.accounts) {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPE,
+          callback: async (resp) => {
+            if (resp.error) {
+              setDriveStatus('error');
+              showToast('Connexion Drive refusée : ' + resp.error, 'error');
+              return;
+            }
+            driveToken = resp.access_token;
+            localStorage.setItem('gd_token', resp.access_token);
+            setDriveStatus('syncing');
+            showDriveConnected();
+            await driveLoad();
+            showToast('✓ Connecté à Google Drive', 'success');
+          }
+        });
+        resolve(true);
+      } else {
+        setTimeout(check, 300);
+      }
+    };
+    check();
   });
-
-  // Try silent token refresh from session
-  const savedToken = sessionStorage.getItem('drive-token');
-  if (savedToken) {
-    driveToken = savedToken;
-    setDriveStatus('ok');
-    showDriveConnected();
-    driveLoad();
-  }
 }
 
+// Alias appelé depuis init()
 function waitForGIS() {
-  let attempts = 0;
-  const check = () => {
-    attempts++;
-    if (window.google?.accounts?.oauth2?.initTokenClient) {
-      initDrive();
-    } else if (attempts < 30) {
-      // Retry every 500ms for up to 15 seconds
-      setTimeout(check, 500);
-    } else {
-      // GIS failed to load — Drive stays disconnected, no error toast
-      console.warn('Google Identity Services failed to load');
-    }
-  };
-  check();
+  initGoogleDrive().then(() => trySilentReconnect());
 }
 
-function handleTokenResponse(resp) {
-  if (resp.error) {
-    setDriveStatus('error');
-    showToast('Connexion Drive échouée : ' + resp.error, 'error');
-    return;
+// ── Silent reconnect with cached token validation ──
+async function trySilentReconnect() {
+  const cachedToken = localStorage.getItem('gd_token');
+  if (!cachedToken) return;
+  try {
+    const resp = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${cachedToken}`);
+    if (resp.ok) {
+      driveToken = cachedToken;
+      showDriveConnected();
+      await driveLoad();
+    } else {
+      localStorage.removeItem('gd_token');
+      localStorage.removeItem('gd_file_id');
+      setDriveStatus('disconnected');
+    }
+  } catch(e) {
+    setDriveStatus('disconnected');
   }
-  driveToken = resp.access_token;
-  sessionStorage.setItem('drive-token', driveToken);
-  setDriveStatus('ok');
-  showDriveConnected();
-  showToast('✓ Connecté à Google Drive', 'success');
-  driveLoad();
 }
 
-function driveConnect() {
-  if (!tokenClient) {
-    // GIS may still be loading — retry once
-    if (window.google?.accounts?.oauth2?.initTokenClient) {
-      initDrive();
-      setTimeout(() => {
-        if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
-        else showToast('API Google non disponible — rechargez la page', 'error');
-      }, 300);
-    } else {
-      showToast('API Google non disponible — vérifiez votre connexion', 'error');
-    }
-    return;
-  }
+// ── Connect ──
+async function driveConnect() {
+  await initGoogleDrive();
+  if (!tokenClient) { showToast('API Google non disponible', 'error'); return; }
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
+// ── Disconnect ──
 function driveDisconnect() {
-  if (driveToken) window.google?.accounts?.oauth2?.revoke?.(driveToken);
+  if (driveToken && window.google?.accounts?.oauth2) {
+    google.accounts.oauth2.revoke(driveToken);
+  }
   driveToken = null;
   driveFileId = null;
-  sessionStorage.removeItem('drive-token');
+  localStorage.removeItem('gd_token');
+  localStorage.removeItem('gd_file_id');
   setDriveStatus('disconnected');
   showDriveDisconnected();
   showToast('Déconnecté de Google Drive', 'info');
@@ -2810,133 +2804,110 @@ function showDriveDisconnected() {
 
 function setDriveStatus(status) {
   driveStatus = status;
-  const dot = document.getElementById('drive-dot');
+  const dot  = document.getElementById('drive-dot');
   const text = document.getElementById('drive-status-text');
-  dot.className = `drive-dot ${status}`;
-  const labels = {
-    ok: 'Synchronisé',
-    syncing: 'Synchronisation...',
-    error: 'Erreur de sync',
-    disconnected: 'Déconnecté'
-  };
-  text.textContent = labels[status] || 'Inconnu';
+  if (dot)  dot.className = `drive-dot ${status}`;
+  const labels = { ok:'Synchronisé', syncing:'Synchronisation...', error:'Erreur de sync', disconnected:'Déconnecté' };
+  if (text) text.textContent = labels[status] || 'Inconnu';
 }
 
-async function driveApiCall(method, url, body) {
-  if (!driveToken) return null;
+// ── Find or create file in appDataFolder (cached) ──
+async function getOrCreateDriveFile() {
+  if (driveFileId) return driveFileId;
+  const cached = localStorage.getItem('gd_file_id');
+  if (cached) { driveFileId = cached; return driveFileId; }
+
+  // Search
+  const searchResp = await fetch(
+    `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${DRIVE_FILE}'&fields=files(id,name)`,
+    { headers: { Authorization: `Bearer ${driveToken}` } }
+  );
+  if (!searchResp.ok) throw new Error('Search failed ' + searchResp.status);
+  const data = await searchResp.json();
+
+  if (data.files && data.files.length > 0) {
+    driveFileId = data.files[0].id;
+  } else {
+    // Create
+    const createResp = await fetch('https://www.googleapis.com/drive/v3/files', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${driveToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: DRIVE_FILE, parents: ['appDataFolder'] })
+    });
+    if (!createResp.ok) throw new Error('Create failed ' + createResp.status);
+    const created = await createResp.json();
+    driveFileId = created.id;
+  }
+  localStorage.setItem('gd_file_id', driveFileId);
+  return driveFileId;
+}
+
+// ── Save to Drive ──
+async function driveSaveNow() {
+  if (!driveToken) { showToast('Non connecté à Drive', 'error'); return; }
   try {
-    const opts = {
-      method,
-      headers: { 'Authorization': `Bearer ${driveToken}` }
-    };
-    if (body) {
-      if (typeof body === 'string') {
-        opts.headers['Content-Type'] = 'application/json';
-        opts.body = body;
-      } else {
-        opts.body = body;
+    setDriveStatus('syncing');
+    const fileId = await getOrCreateDriveFile();
+    const resp = await fetch(
+      `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${driveToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(appData)
       }
-    }
-    const resp = await fetch(url, opts);
-    if (resp.status === 401) {
+    );
+    if (resp.status === 401 || resp.status === 403) {
       driveToken = null;
-      sessionStorage.removeItem('drive-token');
+      localStorage.removeItem('gd_token');
       setDriveStatus('disconnected');
       showDriveDisconnected();
       showToast('Session expirée — reconnecte-toi', 'error');
-      return null;
+      return;
     }
-    if (!resp.ok) return null;
-    const ct = resp.headers.get('content-type') || '';
-    if (ct.includes('application/json')) return resp.json();
-    return resp.text();
-  } catch(e) {
-    setDriveStatus('error');
-    return null;
-  }
-}
-
-async function findDriveFile() {
-  const list = await driveApiCall('GET',
-    'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name)&q=name%3D%22' + DRIVE_FILE + '%22');
-  if (list && list.files && list.files.length > 0) {
-    driveFileId = list.files[0].id;
-    return driveFileId;
-  }
-  return null;
-}
-
-async function driveSaveNow() {
-  if (!driveToken) { showToast('Non connecté à Drive', 'error'); return; }
-  setDriveStatus('syncing');
-
-  const content = JSON.stringify(appData);
-  const blob = new Blob([content], { type: 'application/json' });
-
-  let fileId = driveFileId || await findDriveFile();
-
-  try {
-    if (fileId) {
-      // Update
-      await driveApiCall('PATCH',
-        `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, blob);
-    } else {
-      // Create
-      const meta = { name: DRIVE_FILE, parents: ['appDataFolder'] };
-      const form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
-      form.append('file', blob);
-      const created = await driveApiCall('POST',
-        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', form);
-      if (created && created.id) driveFileId = created.id;
-    }
-
+    if (!resp.ok) throw new Error('Upload failed ' + resp.status);
     setDriveStatus('ok');
     const now = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     appData.meta.last_sync = now;
-    document.getElementById('drive-last-sync').textContent = `Dernière sync : ${now}`;
+    const el = document.getElementById('drive-last-sync');
+    if (el) el.textContent = `Dernière sync : ${now}`;
     showToast('✓ Sauvegardé sur Drive', 'success');
   } catch(e) {
+    console.error('Drive save error:', e);
     setDriveStatus('error');
     showToast('Erreur lors de la sauvegarde', 'error');
   }
 }
 
+// ── Load from Drive ──
 async function driveLoad() {
   if (!driveToken) return;
-  setDriveStatus('syncing');
-
-  const fileId = await findDriveFile();
-  if (!fileId) {
-    setDriveStatus('ok');
-    return;
-  }
-
-  const raw = await driveApiCall('GET',
-    `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`);
-  if (raw && typeof raw === 'object') {
-    appData = { ...appData, ...raw };
-    saveLocal();
-    renderHome();
-    setDriveStatus('ok');
-    showToast('✓ Données rechargées depuis Drive', 'success');
-  } else if (typeof raw === 'string') {
-    try {
-      const parsed = JSON.parse(raw);
+  try {
+    setDriveStatus('syncing');
+    const fileId = await getOrCreateDriveFile();
+    const resp = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+      { headers: { Authorization: `Bearer ${driveToken}` } }
+    );
+    if (resp.status === 404) { setDriveStatus('ok'); return; }
+    if (!resp.ok) throw new Error('Download failed ' + resp.status);
+    const text = await resp.text();
+    if (!text || text.trim() === '') { setDriveStatus('ok'); return; }
+    const parsed = JSON.parse(text);
+    if (parsed && typeof parsed === 'object') {
       appData = { ...appData, ...parsed };
       saveLocal();
       renderHome();
       setDriveStatus('ok');
-      showToast('✓ Données rechargées depuis Drive', 'success');
-    } catch(e) {
-      setDriveStatus('error');
+      showToast('✓ Données chargées depuis Drive', 'success');
     }
-  } else {
-    setDriveStatus('ok');
+  } catch(e) {
+    console.error('Drive load error:', e);
+    setDriveStatus('error');
   }
 }
 
 function scheduleDriveSync() {
+  if (!driveToken) return;
   clearTimeout(syncTimeout);
   syncTimeout = setTimeout(driveSaveNow, 2000);
 }
