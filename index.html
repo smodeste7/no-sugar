@@ -2000,6 +2000,8 @@ function renderHome() {
     if (yLog && yLog.eau_litres !== null && ywInput !== document.activeElement) ywInput.value = yLog.eau_litres;
     if (yLog && yLog.poids_kg !== null && ywgInput !== document.activeElement) ywgInput.value = yLog.poids_kg;
   }
+  // Today log
+  const log = getTodayLog();
   const container = document.getElementById('today-entries');
   container.innerHTML = '';
 
@@ -2713,18 +2715,22 @@ function loadLocal() {
 //  GOOGLE DRIVE
 // ════════════════════════════════════════════════════════════
 function initDrive() {
-  window.google?.accounts?.id?.initialize?.({ client_id: CLIENT_ID });
-  tokenClient = window.google?.accounts?.oauth2?.initTokenClient?.({
+  // Guard — GIS not loaded yet
+  if (!window.google?.accounts?.oauth2?.initTokenClient) {
+    return; // waitForGIS will retry
+  }
+
+  tokenClient = window.google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPE,
     callback: handleTokenResponse,
-    error_callback: (err) => {
+    error_callback: () => {
       setDriveStatus('error');
       showToast('Erreur de connexion Google', 'error');
     }
   });
 
-  // Try silent token refresh
+  // Try silent token refresh from session
   const savedToken = sessionStorage.getItem('drive-token');
   if (savedToken) {
     driveToken = savedToken;
@@ -2732,6 +2738,23 @@ function initDrive() {
     showDriveConnected();
     driveLoad();
   }
+}
+
+function waitForGIS() {
+  let attempts = 0;
+  const check = () => {
+    attempts++;
+    if (window.google?.accounts?.oauth2?.initTokenClient) {
+      initDrive();
+    } else if (attempts < 30) {
+      // Retry every 500ms for up to 15 seconds
+      setTimeout(check, 500);
+    } else {
+      // GIS failed to load — Drive stays disconnected, no error toast
+      console.warn('Google Identity Services failed to load');
+    }
+  };
+  check();
 }
 
 function handleTokenResponse(resp) {
@@ -2750,7 +2773,16 @@ function handleTokenResponse(resp) {
 
 function driveConnect() {
   if (!tokenClient) {
-    showToast('API Google non disponible', 'error');
+    // GIS may still be loading — retry once
+    if (window.google?.accounts?.oauth2?.initTokenClient) {
+      initDrive();
+      setTimeout(() => {
+        if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
+        else showToast('API Google non disponible — rechargez la page', 'error');
+      }, 300);
+    } else {
+      showToast('API Google non disponible — vérifiez votre connexion', 'error');
+    }
     return;
   }
   tokenClient.requestAccessToken({ prompt: 'consent' });
@@ -3099,10 +3131,8 @@ function init() {
   initCalendar();
   checkIOSInstall();
 
-  // Init Drive after GIS loads
-  window.addEventListener('load', () => {
-    setTimeout(initDrive, 1000);
-  });
+  // Wait for Google Identity Services to load (async script)
+  waitForGIS();
 }
 
 init();
