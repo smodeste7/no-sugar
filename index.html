@@ -4168,8 +4168,17 @@ function dismissIOSBanner() {
 // ════════════════════════════════════════════════════════════
 //  PWA — MANIFEST & SERVICE WORKER
 // ════════════════════════════════════════════════════════════
-function setupPWA() {
-  // Manifest
+async function setupPWA() {
+  // On part du logo d'origine et on le décline en PNG aux tailles attendues.
+  const base = generateIcon();
+  const [i180, i192, i512] = await Promise.all([
+    rasterizeIcon(base, 180),
+    rasterizeIcon(base, 192),
+    rasterizeIcon(base, 512)
+  ]);
+
+  // Manifest — ton logo, en PNG 192/512 (purpose 'any' pour ne pas risquer un recadrage
+  // maskable de l'image).
   const manifest = {
     name: 'NO ADDED SUGAR',
     short_name: 'NO ADDED SUGAR',
@@ -4179,13 +4188,9 @@ function setupPWA() {
     background_color: '#080808',
     theme_color: '#080808',
     orientation: 'portrait',
-    // Le data-URI est déclaré en plusieurs tailles (purpose any+maskable) pour
-    // l'installabilité Android. type jpeg = format réel renvoyé par generateIcon().
     icons: [
-      { src: generatePngIcon(192), sizes: '192x192', type: 'image/png', purpose: 'any' },
-      { src: generatePngIcon(512), sizes: '512x512', type: 'image/png', purpose: 'any' },
-      { src: generatePngIcon(192), sizes: '192x192', type: 'image/png', purpose: 'maskable' },
-      { src: generatePngIcon(512), sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+      { src: i192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: i512, sizes: '512x512', type: 'image/png', purpose: 'any' }
     ]
   };
   const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
@@ -4195,11 +4200,10 @@ function setupPWA() {
   link.href = url;
   document.head.appendChild(link);
 
-  // Apple touch icon
-  const iconUrl = generatePngIcon(180);
+  // Apple touch icon — ton logo
   const touchIcon = document.createElement('link');
   touchIcon.rel = 'apple-touch-icon';
-  touchIcon.href = iconUrl;
+  touchIcon.href = i180;
   document.head.appendChild(touchIcon);
 
   // Service Worker — fichier réel servi depuis l'origine (obligatoire : register() refuse
@@ -4209,27 +4213,24 @@ function setupPWA() {
   }
 }
 
-// Icône PNG générée au runtime (origine-indépendante, maskable) — corrige le mismatch jpeg
-// et l'installabilité Android (192/512 attendus en image/png).
-function generatePngIcon(size) {
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const ctx = c.getContext('2d');
-  // Fond plein rouge = zone de sécurité maskable
-  ctx.fillStyle = '#E8192C';
-  ctx.fillRect(0, 0, size, size);
-  // Pastille sombre centrale
-  ctx.fillStyle = '#080808';
-  ctx.beginPath();
-  ctx.arc(size / 2, size / 2, size * 0.34, 0, Math.PI * 2);
-  ctx.fill();
-  // Monogramme
-  ctx.fillStyle = '#ffffff';
-  ctx.font = `700 ${Math.round(size * 0.28)}px -apple-system, Helvetica, Arial, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('NS', size / 2, size / 2 + size * 0.02);
-  return c.toDataURL('image/png');
+// Rasterise LE logo d'origine (generateIcon) en PNG à la taille voulue. Préserve l'identité
+// visuelle tout en fournissant les formats/tailles attendus (192/512 en image/png) pour
+// l'installabilité Android — sans inventer de nouvelle icône.
+function rasterizeIcon(src, size) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas');
+        c.width = c.height = size;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, size, size);
+        resolve(c.toDataURL('image/png'));
+      } catch (e) { resolve(src); }
+    };
+    img.onerror = () => resolve(src); // fallback : la source telle quelle
+    img.src = src;
+  });
 }
 
 function generateIcon() {
@@ -4283,4 +4284,3 @@ init();
 </script>
 </body>
 </html>
-
